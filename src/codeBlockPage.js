@@ -1,9 +1,11 @@
+// CodeBlock.js
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import io from "socket.io-client";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
 import codeBlocks from "./codeBlocks";
+import SmileyAnimation from "./SmileyAnimation";
 
 const socket = io("http://localhost:5000", {
   transports: ["websocket"],
@@ -13,11 +15,13 @@ const CodeBlock = () => {
   const { id } = useParams();
   const codeBlock = codeBlocks[id];
   const [code, setCode] = useState(codeBlock.code);
+  const sol = codeBlock.solution;
   const [isMentor, setIsMentor] = useState(() => {
-    // Fetching the latest value of 'mentorConnected' from the server
     const initialValue = socket.emit("check-mentor-status");
     return initialValue;
   });
+  const [showSmiley, setShowSmiley] = useState(false);
+
   useEffect(() => {
     socket.emit("check-mentor-status", (isMentorConnected) => {
       setIsMentor(isMentorConnected);
@@ -33,17 +37,24 @@ const CodeBlock = () => {
 
     socket.on("code-change", (newCode) => {
       setCode(newCode);
+      if (newCode === sol) {
+        setShowSmiley(true);
+      }
     });
 
     return () => {
-      //socket.off("student-connected");
       socket.off("code-change");
     };
-  }, []);
+  }, [sol]);
 
   const handleCodeChange = (newCode) => {
     if (!isMentor) {
-      setCode(newCode); // Update the code immediately for the current user
+      setCode(newCode);
+    }
+    if (newCode === sol) {
+      setShowSmiley(true);
+    } else {
+      setShowSmiley(false); // Hide the smiley face when code changes
     }
     socket.emit("code-change", newCode);
   };
@@ -58,11 +69,16 @@ const CodeBlock = () => {
       {isMentor ? (
         <p>Read-only mode (Mentor)</p>
       ) : (
-        <textarea
-          value={code}
-          onChange={(e) => handleCodeChange(e.target.value)}
-        />
+        <div>
+          <textarea
+            value={code}
+            onChange={(e) => handleCodeChange(e.target.value)}
+          />
+        </div>
       )}
+
+      {/* Render the SmileyAnimation component */}
+      <SmileyAnimation isVisible={showSmiley} />
     </div>
   );
 };
