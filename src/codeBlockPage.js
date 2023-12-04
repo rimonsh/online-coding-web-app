@@ -7,7 +7,7 @@ import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
 import codeBlocks from "./codeBlocks";
 import SmileyAnimation from "./SmileyAnimation";
 
-const socket = io("http://localhost:5000", {
+const socket = io("https://online-coding-web-app-pi.vercel.app/", {
   transports: ["websocket"],
 });
 
