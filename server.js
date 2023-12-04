@@ -10,7 +10,7 @@ const io = socketIO(server, {
 });
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "online-coding-web-app-pi.vercel.app",
     methods: ["GET", "POST"],
     credentials: true,
   })
@@ -66,7 +66,7 @@ io.on("connection", (socket) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
