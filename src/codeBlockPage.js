@@ -13,9 +13,16 @@ const CodeBlock = () => {
   const { id } = useParams();
   const codeBlock = codeBlocks[id];
   const [code, setCode] = useState(codeBlock.code);
-  const [isMentor, setIsMentor] = useState(false);
-
+  const [isMentor, setIsMentor] = useState(() => {
+    // Fetching the latest value of 'mentorConnected' from the server
+    const initialValue = socket.emit("check-mentor-status");
+    return initialValue;
+  });
   useEffect(() => {
+    socket.emit("check-mentor-status", (isMentorConnected) => {
+      setIsMentor(isMentorConnected);
+    });
+
     socket.on("mentor-connected", () => {
       setIsMentor(true);
     });
@@ -29,7 +36,7 @@ const CodeBlock = () => {
     });
 
     return () => {
-      socket.off("student-connected");
+      //socket.off("student-connected");
       socket.off("code-change");
     };
   }, []);
@@ -47,6 +54,7 @@ const CodeBlock = () => {
       <SyntaxHighlighter language="javascript" style={tomorrow}>
         {code}
       </SyntaxHighlighter>
+      <h2>{console.log("isMentor", isMentor)}</h2>
       {isMentor ? (
         <p>Read-only mode (Mentor)</p>
       ) : (

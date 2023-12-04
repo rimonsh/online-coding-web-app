@@ -17,6 +17,8 @@ app.use(
 );
 
 let mentorConnected = false;
+let studentConnected = false;
+let numOfStudentsConnected = 0;
 let mentorSocket = null;
 
 io.on("connection", (socket) => {
@@ -26,9 +28,23 @@ io.on("connection", (socket) => {
     socket.emit("mentor-connected");
     console.log("A Mentor connected");
   } else {
+    studentConnected = true;
+    numOfStudentsConnected++;
     socket.emit("student-connected");
     console.log("A Student connected");
   }
+  socket.on("check-mentor-status", () => {
+    console.log(
+      "checking mentor status. mentorConnected %d :: studentConnected %d",
+      mentorConnected,
+      numOfStudentsConnected
+    );
+    if (numOfStudentsConnected > 0) {
+      socket.emit("mentor-status", false);
+    } else {
+      socket.emit("mentor-status", true);
+    }
+  });
 
   socket.on("code-change", (newCode) => {
     socket.broadcast.emit("code-change", newCode);
@@ -39,6 +55,12 @@ io.on("connection", (socket) => {
       console.log("A Mentor disconnected");
       mentorConnected = false;
       mentorSocket = null;
+    } else {
+      console.log("A student disconnected");
+      numOfStudentsConnected--;
+      if (numOfStudentsConnected == 0) {
+        studentConnected = false;
+      }
     }
     console.log("User disconnected");
   });
