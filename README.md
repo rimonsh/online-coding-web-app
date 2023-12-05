@@ -1,4 +1,4 @@
-
+# NOTE: to run locally please run 'node server.js' then 'npm start'
 # NOTE: When running locally, and connecting from different tabs(clients)  - when on student connection. there is a need to refresh the page after clicking on any code block.
 
 # NOTE: when deployed to Vercel. the server doesn't seem to be running correctly as i get errors: 
