@@ -1,3 +1,12 @@
+
+# NOTE: When running locally, and connecting from different tabs(clients)  - when on student connection. there is a need to refresh the page after clicking on any code block.
+
+# NOTE: when deployed to Vercel. the server doesn't seem to be running correctly as i get errors: 
+WebSocket connection to 'wss://online-coding-web-app-pi.vercel.app/socket.io/?EIO=4&transport=websocket' failed
+That is why the feature with the first connection is defined to be the mentor and other connections later defined as students work only locally. 
+
+----------------------------------------------------
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
